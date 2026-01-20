@@ -1,6 +1,7 @@
 import React from 'react';
 import { ClassFolder } from '../types';
 import { useGalleryStore } from '../store/useGalleryStore';
+import bannerImg from '../assets/banner.jpg';
 
 interface Props {
   onSelect: (folder: ClassFolder) => void;
@@ -11,25 +12,25 @@ const ClassSelectionGrid: React.FC<Props> = ({ onSelect }) => {
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
       {/* Hero Banner */}
-      <div className="relative w-full h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl mb-12">
+      <div className="relative w-full h-48 md:h-96 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mb-8 md:mb-12">
         <img 
-          src="https://drive.google.com/uc?export=view&id=17Xus1t4YWWloS5RaohrgoIvMGf6Vys8N" 
+          src={bannerImg} 
           alt="Annual Day Stage Performance"
           className="w-full h-full object-cover"
           referrerPolicy="no-referrer"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 md:p-12">
-          <span className="text-blue-400 font-bold tracking-wider uppercase text-sm mb-2">Welcome to the Gallery</span>
-          <h1 className="text-3xl md:text-5xl font-black text-white mb-2">Annual Day 2026</h1>
-          <p className="text-gray-200 max-w-2xl text-sm md:text-base">
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4 md:p-12">
+          <span className="text-blue-900 font-bold tracking-wider uppercase text-xs md:text-sm mb-1 md:mb-2">Welcome to the Gallery</span>
+          <h1 className="text-xl md:text-5xl font-black text-white mb-2">Annual Day 2026</h1>
+          <p className="hidden md:block text-gray-200 max-w-2xl text-sm md:text-base">
             Relive the magic of our spectacular annual function. Browse through the class-wise collections below to find your special moments.
           </p>
         </div>
       </div>
 
       <div className="text-center max-w-2xl mx-auto space-y-2">
-        <h2 className="text-3xl font-extrabold text-gray-900">Choose a Class</h2>
-        <p className="text-gray-500">Browse photos and videos of our talented students organized by class.</p>
+        <h2 className="text-3xl font-extrabold text-gray-900">Choose a Album</h2>
+        <p className="text-gray-500">Browse photos and videos of our talented students.</p>
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
