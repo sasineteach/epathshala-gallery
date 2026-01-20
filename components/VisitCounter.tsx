@@ -6,7 +6,7 @@ const VisitCounter: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const GLOBAL_COUNTER_KEY = 'total-site-visits';
+    const GLOBAL_COUNTER_KEY = 'page_views';
     
     // Increment on mount (session storage check could be added here to avoid spamming)
     incrementAlbumView(GLOBAL_COUNTER_KEY).then(newCount => {

@@ -74,10 +74,12 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     
     // Fetch counts in parallel but handled gracefully
     await Promise.all(classes.map(async (folder) => {
-      const counterId = getCounterIdForAlbum(folder.className, folder.id);
-      const count = await getAlbumViewCount(counterId);
-      if (count !== null) {
-        counts[folder.id] = count;
+      const counterId = getCounterIdForAlbum(folder.className);
+      if (counterId) {
+        const count = await getAlbumViewCount(counterId);
+        if (count !== null) {
+          counts[folder.id] = count;
+        }
       }
     }));
     
@@ -87,15 +89,17 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   selectClass: async (folder: ClassFolder) => {
     set({ selectedClass: folder, isLoading: true, error: null, mediaItems: [] });
     
-    // Increment view count in background
-    const counterId = getCounterIdForAlbum(folder.className, folder.id);
-    incrementAlbumView(counterId).then(newCount => {
-      if (newCount !== null) {
-        set(state => ({ 
-          viewCounts: { ...state.viewCounts, [folder.id]: newCount } 
-        }));
-      }
-    });
+    // Increment view count in background if mapped
+    const counterId = getCounterIdForAlbum(folder.className);
+    if (counterId) {
+      incrementAlbumView(counterId).then(newCount => {
+        if (newCount !== null) {
+          set(state => ({ 
+            viewCounts: { ...state.viewCounts, [folder.id]: newCount } 
+          }));
+        }
+      });
+    }
 
     try {
       if (folder.id.startsWith('c')) { // Mock ID

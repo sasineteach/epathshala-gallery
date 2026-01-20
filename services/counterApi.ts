@@ -2,14 +2,14 @@ const API_BASE_URL = 'https://api.counterapi.dev/v2';
 const WORKSPACE = import.meta.env.VITE_COUNTER_WORKSPACE || 'epathshala';
 
 const ALBUM_COUNTER_MAPPING: Record<string, string> = {
-  'Student Photos': 'student-album-counter',
-  'Dance Photos': 'dance-album-counter',
-  'Song Photos': 'songs-album-counter',
-  'Guest Photos': 'guest-album-counter'
+  'STUDENT PHOTOS': 'student-album-counter',
+  'DANCE PHOTOS': 'dance-album-counter',
+  'SONG PHOTOS': 'songs-album-counter',
+  'GUEST PHOTOS': 'guest-album-counter'
 };
 
-export const getCounterIdForAlbum = (albumName: string, fallbackId: string): string => {
-  return ALBUM_COUNTER_MAPPING[albumName] || fallbackId;
+export const getCounterIdForAlbum = (albumName: string): string | null => {
+  return ALBUM_COUNTER_MAPPING[albumName.toUpperCase()] || null;
 };
 
 export const incrementAlbumView = async (albumId: string): Promise<number | null> => {
