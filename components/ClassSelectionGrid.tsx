@@ -2,6 +2,7 @@ import React from 'react';
 import { ClassFolder } from '../types';
 import { useGalleryStore } from '../store/useGalleryStore';
 import bannerImg from '../assets/banner.jpg';
+import mobileBannerImg from '../assets/mobile-banner.jpg';
 
 interface Props {
   onSelect: (folder: ClassFolder) => void;
@@ -13,13 +14,16 @@ const ClassSelectionGrid: React.FC<Props> = ({ onSelect }) => {
     <div className="space-y-12 animate-in fade-in duration-500">
       {/* Hero Banner */}
       <div className="relative w-full h-48 md:h-96 rounded-2xl md:rounded-3xl overflow-hidden shadow-2xl mb-8 md:mb-12">
-        <img 
-          src={bannerImg} 
-          alt="Annual Day Stage Performance"
-          className="w-full h-full object-cover"
-          referrerPolicy="no-referrer"
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-4 md:p-12">
+        <picture>
+          <source media="(max-width: 767px)" srcSet={mobileBannerImg} />
+          <img 
+            src={bannerImg} 
+            alt="Annual Day Stage Performance"
+            className="w-full h-full object-cover"
+            referrerPolicy="no-referrer"
+          />
+        </picture>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent hidden md:flex flex-col justify-end p-4 md:p-12">
           <span className="text-blue-900 font-bold tracking-wider uppercase text-xs md:text-sm mb-1 md:mb-2">Welcome to the Gallery</span>
           <h1 className="text-xl md:text-5xl font-black text-white mb-2">Annual Day 2026</h1>
           <p className="hidden md:block text-gray-200 max-w-2xl text-sm md:text-base">
