@@ -2,7 +2,7 @@
 import { create } from 'zustand';
 import { ClassFolder, MediaItem, MediaType } from '../types';
 import { fetchFolders, fetchFiles, getFileUrl, getThumbnailUrl } from '../services/googleDrive';
-import { incrementAlbumView, getAlbumViewCount } from '../services/counterApi';
+import { incrementAlbumView, getAlbumViewCount, getCounterIdForAlbum } from '../services/counterApi';
 import { MOCK_CLASSES, getMockMediaForClass } from '../constants';
 
 interface GalleryState {
@@ -74,7 +74,8 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     
     // Fetch counts in parallel but handled gracefully
     await Promise.all(classes.map(async (folder) => {
-      const count = await getAlbumViewCount(folder.id);
+      const counterId = getCounterIdForAlbum(folder.className, folder.id);
+      const count = await getAlbumViewCount(counterId);
       if (count !== null) {
         counts[folder.id] = count;
       }
@@ -87,7 +88,8 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     set({ selectedClass: folder, isLoading: true, error: null, mediaItems: [] });
     
     // Increment view count in background
-    incrementAlbumView(folder.id).then(newCount => {
+    const counterId = getCounterIdForAlbum(folder.className, folder.id);
+    incrementAlbumView(counterId).then(newCount => {
       if (newCount !== null) {
         set(state => ({ 
           viewCounts: { ...state.viewCounts, [folder.id]: newCount } 
