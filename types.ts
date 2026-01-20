@@ -9,6 +9,7 @@ export interface MediaItem {
   name: string;
   type: MediaType;
   url: string;
+  downloadUrl?: string;
   thumbnail: string;
   mimeType: string;
   size?: string;

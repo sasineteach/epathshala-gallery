@@ -121,6 +121,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
         name: f.name,
         type: f.mimeType.startsWith('video/') ? MediaType.VIDEO : MediaType.IMAGE,
         url: getFileUrl(f),
+        downloadUrl: f.webContentLink,
         thumbnail: getThumbnailUrl(f),
         mimeType: f.mimeType,
         size: f.size ? `${(parseInt(f.size) / (1024 * 1024)).toFixed(2)} MB` : undefined,

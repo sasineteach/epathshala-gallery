@@ -40,7 +40,12 @@ const FullscreenGallery: React.FC<Props> = ({ items, initialIndex, onClose }) =>
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [handleNext, handlePrev, onClose]);
 
-  const downloadFile = async (url: string, name: string) => {
+  const downloadFile = async (url: string, name: string, downloadUrl?: string) => {
+    if (downloadUrl) {
+      window.open(downloadUrl, '_blank');
+      return;
+    }
+
     try {
       const response = await fetch(url);
       const blob = await response.blob();
@@ -96,7 +101,7 @@ const FullscreenGallery: React.FC<Props> = ({ items, initialIndex, onClose }) =>
             <Info size={24} />
           </button>
           <button 
-            onClick={() => downloadFile(activeItem.url, activeItem.name)}
+            onClick={() => downloadFile(activeItem.url, activeItem.name, activeItem.downloadUrl)}
             className="p-3 text-white hover:bg-white/10 rounded-full transition-colors"
             title="Download"
           >

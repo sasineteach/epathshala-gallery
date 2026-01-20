@@ -66,11 +66,17 @@ export const fetchFiles = async (folderId: string): Promise<DriveFile[]> => {
 };
 
 export const getFileUrl = (file: DriveFile): string => {
-  // Use lh3 thumbnail link if available (best for images)
+  // For videos, return the direct streamable API URL using key
+  if (file.mimeType.startsWith('video/')) {
+    return `${BASE_URL}/files/${file.id}?alt=media&key=${API_KEY}`;
+  }
+
+  // For images, use lh3 thumbnail link if available (best for images)
   if (file.thumbnailLink) {
     // Replace the small size with a larger one
     return file.thumbnailLink.replace(/=s\d+/, '=s1600');
   }
+  
   // Fallback to direct Drive export link
   return `https://drive.google.com/uc?export=view&id=${file.id}`;
 };
