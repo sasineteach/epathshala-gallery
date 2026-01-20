@@ -10,6 +10,23 @@ const ClassSelectionGrid: React.FC<Props> = ({ onSelect }) => {
   const { classes } = useGalleryStore();
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
+      {/* Hero Banner */}
+      <div className="relative w-full h-64 md:h-96 rounded-3xl overflow-hidden shadow-2xl mb-12">
+        <img 
+          src="https://drive.google.com/uc?export=view&id=17Xus1t4YWWloS5RaohrgoIvMGf6Vys8N" 
+          alt="Annual Day Stage Performance"
+          className="w-full h-full object-cover"
+          referrerPolicy="no-referrer"
+        />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent flex flex-col justify-end p-8 md:p-12">
+          <span className="text-blue-400 font-bold tracking-wider uppercase text-sm mb-2">Welcome to the Gallery</span>
+          <h1 className="text-3xl md:text-5xl font-black text-white mb-2">Annual Day 2026</h1>
+          <p className="text-gray-200 max-w-2xl text-sm md:text-base">
+            Relive the magic of our spectacular annual function. Browse through the class-wise collections below to find your special moments.
+          </p>
+        </div>
+      </div>
+
       <div className="text-center max-w-2xl mx-auto space-y-2">
         <h2 className="text-3xl font-extrabold text-gray-900">Choose a Class</h2>
         <p className="text-gray-500">Browse photos and videos of our talented students organized by class.</p>
