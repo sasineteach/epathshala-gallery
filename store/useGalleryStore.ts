@@ -2,6 +2,7 @@
 import { create } from 'zustand';
 import { ClassFolder, MediaItem, MediaType } from '../types';
 import { fetchFolders, fetchFiles, getFileUrl, getThumbnailUrl } from '../services/googleDrive';
+import { incrementAlbumView, getAlbumViewCount } from '../services/counterApi';
 import { MOCK_CLASSES, getMockMediaForClass } from '../constants';
 
 interface GalleryState {
@@ -10,9 +11,11 @@ interface GalleryState {
   mediaItems: MediaItem[];
   isLoading: boolean;
   error: string | null;
+  viewCounts: Record<string, number>;
   
   // Actions
   loadClasses: () => Promise<void>;
+  loadViewCounts: () => Promise<void>;
   selectClass: (folder: ClassFolder) => Promise<void>;
   clearSelection: () => void;
 }
@@ -25,6 +28,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
   mediaItems: [],
   isLoading: false,
   error: null,
+  viewCounts: {},
 
   loadClasses: async () => {
     set({ isLoading: true, error: null });
@@ -54,18 +58,48 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
       }));
 
       set({ classes: classFolders, isLoading: false });
+      
+      // Trigger lazy load of view counts
+      get().loadViewCounts();
+      
     } catch (err) {
       set({ error: 'Failed to load classes', isLoading: false });
       console.error(err);
     }
   },
 
+  loadViewCounts: async () => {
+    const { classes } = get();
+    const counts: Record<string, number> = {};
+    
+    // Fetch counts in parallel but handled gracefully
+    await Promise.all(classes.map(async (folder) => {
+      const count = await getAlbumViewCount(folder.id);
+      if (count !== null) {
+        counts[folder.id] = count;
+      }
+    }));
+    
+    set(state => ({ viewCounts: { ...state.viewCounts, ...counts } }));
+  },
+
   selectClass: async (folder: ClassFolder) => {
     set({ selectedClass: folder, isLoading: true, error: null, mediaItems: [] });
+    
+    // Increment view count in background
+    incrementAlbumView(folder.id).then(newCount => {
+      if (newCount !== null) {
+        set(state => ({ 
+          viewCounts: { ...state.viewCounts, [folder.id]: newCount } 
+        }));
+      }
+    });
+
     try {
       if (folder.id.startsWith('c')) { // Mock ID
         const media = getMockMediaForClass(folder.id);
         set({ mediaItems: media, isLoading: false });
+        // ... (existing mock logic)
         return;
       }
 

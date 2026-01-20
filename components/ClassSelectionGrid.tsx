@@ -8,7 +8,7 @@ interface Props {
 }
 
 const ClassSelectionGrid: React.FC<Props> = ({ onSelect }) => {
-  const { classes } = useGalleryStore();
+  const { classes, viewCounts } = useGalleryStore();
   return (
     <div className="space-y-12 animate-in fade-in duration-500">
       {/* Hero Banner */}
@@ -53,8 +53,14 @@ const ClassSelectionGrid: React.FC<Props> = ({ onSelect }) => {
                 referrerPolicy="no-referrer"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
-              <div className="absolute top-3 right-3 bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-blue-600 uppercase tracking-wider">
-                {folder.itemCount} items
+              <div className="absolute top-3 right-3 flex gap-2">
+                <div className="bg-black/50 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-white uppercase tracking-wider flex items-center gap-1">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
+                  {viewCounts[folder.id] || 0}
+                </div>
+                <div className="bg-white/90 backdrop-blur px-2 py-1 rounded-lg text-[10px] font-bold text-blue-600 uppercase tracking-wider">
+                  {folder.itemCount} items
+                </div>
               </div>
             </div>
             <div className="p-5 w-full flex justify-between items-center">
