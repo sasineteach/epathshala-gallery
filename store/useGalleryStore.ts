@@ -75,6 +75,7 @@ export const useGalleryStore = create<GalleryState>((set, get) => ({
     // Fetch counts in parallel but handled gracefully
     await Promise.all(classes.map(async (folder) => {
       const counterId = getCounterIdForAlbum(folder.className);
+      
       if (counterId) {
         const count = await getAlbumViewCount(counterId);
         if (count !== null) {

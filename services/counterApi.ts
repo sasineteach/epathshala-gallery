@@ -19,7 +19,8 @@ export const incrementAlbumView = async (albumId: string): Promise<number | null
     if (!response.ok) throw new Error('Failed to increment count');
     
     const data = await response.json();
-    return data.count;
+    // V2 API returns { code: "200", data: { up_count: number, ... } }
+    return data.data?.up_count ?? data.count ?? 0;
   } catch (error) {
     console.error('Error incrementing view count:', error);
     return null;
@@ -33,7 +34,8 @@ export const getAlbumViewCount = async (albumId: string): Promise<number | null>
     if (!response.ok) throw new Error('Failed to get count');
     
     const data = await response.json();
-    return data.count;
+    // V2 API returns { code: "200", data: { up_count: number, ... } }
+    return data.data?.up_count ?? data.count ?? 0;
   } catch (error) {
     console.error('Error fetching view count:', error);
     return null;
