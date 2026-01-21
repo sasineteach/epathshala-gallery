@@ -29,16 +29,26 @@ export const fetchFolders = async (parentFolderId: string): Promise<DriveFolder[
   }
 
   const query = `'${parentFolderId}' in parents and mimeType = 'application/vnd.google-apps.folder' and trashed = false`;
-  const url = `${BASE_URL}/files?q=${encodeURIComponent(query)}&key=${API_KEY}&fields=files(id,name)&supportsAllDrives=true&includeItemsFromAllDrives=true`;
+  let allFiles: DriveFolder[] = [];
+  let pageToken: string | null = null;
 
-  try {
-    const response = await fetch(url);
-    const data = await response.json();
-    return data.files || [];
-  } catch (error) {
-    console.error('Error fetching folders:', error);
-    return [];
-  }
+  do {
+    const url = `${BASE_URL}/files?q=${encodeURIComponent(query)}&key=${API_KEY}&pageSize=1000&fields=nextPageToken,files(id,name)&supportsAllDrives=true&includeItemsFromAllDrives=true${pageToken ? `&pageToken=${pageToken}` : ''}`;
+    
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.files) {
+        allFiles = [...allFiles, ...data.files];
+      }
+      pageToken = data.nextPageToken || null;
+    } catch (error) {
+      console.error('Error fetching folders:', error);
+      return allFiles;
+    }
+  } while (pageToken);
+
+  return allFiles;
 };
 
 export const fetchFiles = async (folderId: string): Promise<DriveFile[]> => {
@@ -48,21 +58,31 @@ export const fetchFiles = async (folderId: string): Promise<DriveFile[]> => {
   }
 
   const query = `'${folderId}' in parents and trashed = false`;
-  const url = `${BASE_URL}/files?q=${encodeURIComponent(query)}&key=${API_KEY}&fields=files(id,name,mimeType,size,imageMediaMetadata,thumbnailLink,webViewLink,webContentLink)&supportsAllDrives=true&includeItemsFromAllDrives=true`;
+  let allFiles: DriveFile[] = [];
+  let pageToken: string | null = null;
 
-  try {
-    const response = await fetch(url);
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Google Drive API Error (fetchFiles):', errorData);
-      return [];
+  do {
+    const url = `${BASE_URL}/files?q=${encodeURIComponent(query)}&key=${API_KEY}&pageSize=1000&fields=nextPageToken,files(id,name,mimeType,size,imageMediaMetadata,thumbnailLink,webViewLink,webContentLink)&supportsAllDrives=true&includeItemsFromAllDrives=true${pageToken ? `&pageToken=${pageToken}` : ''}`;
+
+    try {
+      const response = await fetch(url);
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Google Drive API Error (fetchFiles):', errorData);
+        return allFiles; 
+      }
+      const data = await response.json();
+      if (data.files) {
+        allFiles = [...allFiles, ...data.files];
+      }
+      pageToken = data.nextPageToken || null;
+    } catch (error) {
+      console.error('Error fetching files:', error);
+      return allFiles;
     }
-    const data = await response.json();
-    return data.files || [];
-  } catch (error) {
-    console.error('Error fetching files:', error);
-    return [];
-  }
+  } while (pageToken);
+
+  return allFiles;
 };
 
 export const getFileUrl = (file: DriveFile): string => {
